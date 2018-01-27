@@ -1,0 +1,38 @@
+let op (s : char Mystream.mystream) : State.state =
+  let rec one (stream : char Mystream.mystream) : State.state =
+    match stream with
+      Mystream.End -> State.Terminate(false)
+    | Mystream.Cons(c, _) ->
+        let lookahead = (Mystream.tl stream) () in
+        if (c = '+') || (c = '-') || c = '*' || c = '=' then
+          match lookahead with
+            Mystream.Cons(c', _) ->
+              if (c = '<') || (c = '>') then
+                State.State(two) 
+              else
+                State.Terminate(true) 
+          | Mystream.End ->
+              State.Terminate(true)
+        else
+          State.Terminate(false)
+
+  and two  (stream : char Mystream.mystream) : State.state =
+    match stream with
+      Mystream.End -> State.Terminate(true)
+    | Mystream.Cons(c, _) ->
+        let lookahead = (Mystream.tl stream) () in
+        if (c = '<') || (c = '>') then
+           match lookahead with
+            Mystream.Cons(c', _) ->
+              if (c = '=') then
+                State.State(two)
+              else
+                State.Terminate(true)
+          | Mystream.End -> State.Terminate(true)
+      else
+        State.Terminate(true)
+  in
+  match s with
+    Mystream.End -> State.Terminate(false)
+  | _ -> one s
+

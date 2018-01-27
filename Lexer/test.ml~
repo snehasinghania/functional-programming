@@ -1,0 +1,2 @@
+let funn x = 
+	if x = ' ' then true else false

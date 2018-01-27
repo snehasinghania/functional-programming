@@ -1,0 +1,38 @@
+{
+exception Lexer_exception of string
+
+type token =
+    NUM of int
+  | Id of string
+  | ADD
+  | MUL
+  | SUB
+  | DIV
+  | LPAREN
+  | RPAREN
+  | SEMI
+  | EQL
+  | EOF
+}
+
+let digit = ['0'-'9']
+let integer = ['0'-'9']['0'-'9']*
+let id = ['a'-'z''A'-'Z'] ['a'-'z' 'A'-'Z' '0'-'9']*
+
+rule scan = parse
+  | id as s {  Id(s) }
+  | integer as s {  NUM(int_of_string s) }
+  | "+"  { ADD  }
+  | "*"  { MUL }
+  | "-"  { SUB }
+  | "/"  { DIV }
+  | "("  { LPAREN }
+  | ")"  { RPAREN }
+  | eof  { EOF  }
+  | ";"	 { SEMI }
+  | "="  { EQL }
+  | _    { scan lexbuf }
+
+
+{
+}
